@@ -4,6 +4,12 @@
 sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/collections/ -type f -name "Makefile")
 #修改immortalwrt.lan关联IP
 sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $(find ./feeds/luci/modules/luci-mod-system/ -type f -name "flash.js")
+#删除「系统→插件」菜单项
+PLUGINS_MENU=$(find ./feeds/luci/modules/luci-mod-system/ -type f -name "luci-mod-system.json" -path "*/menu.d/*" 2>/dev/null)
+if [ -f "$PLUGINS_MENU" ]; then
+    sed -i '/"admin\/system\/plugins"/,/^        },$/d' "$PLUGINS_MENU"
+    echo "Plugins menu has been removed!"
+fi
 #添加编译日期标识
 #sed -i "s/(\(luciversion || ''\))/(\1) + (' \/ $WRT_MARK-$WRT_DATE')/g" $(find ./feeds/luci/modules/luci-mod-status/ -type f -name "10_system.js")
 
